@@ -1,10 +1,24 @@
 from datetime import datetime, timedelta
 import os; os.system("cls")
+import random
 
 producao = []
 
 def gerar_producao():
     os.system("cls")
+
+    print("=== MODO DE REGISTRO ===")
+    print("1 - Manual")
+    print("2 - Aleatório")
+
+    while True:
+        modo = input("Escolha: ")
+        if modo in ("1", "2"):
+            break
+        else:
+            print("Opção inválida! Digite 1 ou 2.")
+
+    gerar_aleatorio = (modo == "2")
 
     while True:
         nome = input("Digite o nome do Produto: ").strip()
@@ -21,32 +35,44 @@ def gerar_producao():
         except ValueError:
             print("Data inválida! Use o formato DD/MM/AAAA.")
 
+    if gerar_aleatorio:
+        print("\n Gerando produção aleatória da semana...\n")
+
     for dia in range(7):
         data_atual = data_inicio + timedelta(days=dia)
         data_formatada = data_atual.strftime("%d/%m/%Y")
 
         print(f"\nData: {data_formatada}")
 
-        while True:
-            try:
-                manha = int(input("Produção da manhã: "))
-                break
-            except ValueError:
-                print("Erro: Somente número inteiro!")
+        if gerar_aleatorio:
+            manha = random.randint(50, 200)
+            tarde = random.randint(50, 200)
+            noite = random.randint(50, 200)
 
-        while True:
-            try:
-                tarde = int(input("Produção da tarde: "))
-                break
-            except ValueError:
-                print("Erro: Somente número inteiro!")
+            print(f" Manhã: {manha}")
+            print(f" Tarde: {tarde}")
+            print(f" Noite: {noite}")
+        else:
+            while True:
+                try:
+                    manha = int(input("Produção da manhã: "))
+                    break
+                except ValueError:
+                    print("Erro: Somente número inteiro!")
 
-        while True:
-            try:
-                noite = int(input("Produção da noite: "))
-                break
-            except ValueError:
-                print("Erro: Somente número inteiro!")
+            while True:
+                try:
+                    tarde = int(input("Produção da tarde: "))
+                    break
+                except ValueError:
+                    print("Erro: Somente número inteiro!")
+
+            while True:
+                try:
+                    noite = int(input("Produção da noite: "))
+                    break
+                except ValueError:
+                    print("Erro: Somente número inteiro!")
 
         producao.append({
             "nome": nome,
@@ -427,17 +453,88 @@ def simulação_ideal():
         sobra = real_mensal_estimado - ideal_mensal
         print(f"\n Meta mensal superada em {sobra:.2f} unidades!")
 
-    
+def relatorio_producao():
+    os.system("cls")
+
+    if not producao:
+        print("\nNenhuma produção real cadastrada.")
+        return
+
+    print("\n === RELATÓRIO REAL x IDEAL === \n")
+
+    ideal_mensal = 750 
+    ideal_semanal = ideal_mensal / 4
+    ideal_diaria = ideal_mensal / 30
+    ideal_anual = ideal_mensal * 12
+
+    total_real = 0
+    datas = set()
+
+    for item in producao:
+        total_dia = item["manha"] + item["tarde"] + item["noite"]
+        total_real += total_dia
+        datas.add(item["data"])
+
+    total_dias_reais = len(datas)
+
+    if total_dias_reais == 0:
+        print("Nenhum dia válido encontrado.")
+        return
+
+    media_diaria_real = total_real / total_dias_reais
+    real_semanal_estimado = media_diaria_real * 7
+    real_mensal_estimado = media_diaria_real * 30
+    real_anual_estimado = real_mensal_estimado * 12
+
+    eficiencia_diaria = (media_diaria_real / ideal_diaria) * 100
+    eficiencia_semanal = (real_semanal_estimado / ideal_semanal) * 100
+    eficiencia_mensal = (real_mensal_estimado / ideal_mensal) * 100
+    eficiencia_anual = (real_anual_estimado / ideal_anual) * 100
+
+    print("🔹 PRODUÇÃO IDEAL")
+    print(f" Diária : {ideal_diaria:.2f}")
+    print(f" Semanal: {ideal_semanal:.2f}")
+    print(f" Mensal : {ideal_mensal:.2f}")
+    print(f" Anual  : {ideal_anual:.2f}\n")
+
+    print("🔹 PRODUÇÃO REAL (BASEADA NOS DADOS CADASTRADOS)")
+    print(f" Média diária real : {media_diaria_real:.2f}")
+    print(f" Semanal estimada  : {real_semanal_estimado:.2f}")
+    print(f" Mensal estimada   : {real_mensal_estimado:.2f}")
+    print(f" Anual estimada    : {real_anual_estimado:.2f}\n")
+
+    print("🔹 EFICIÊNCIA")
+    print(f" Diária : {eficiencia_diaria:.2f}%")
+    print(f" Semanal: {eficiencia_semanal:.2f}%")
+    print(f" Mensal : {eficiencia_mensal:.2f}%")
+    print(f" Anual  : {eficiencia_anual:.2f}%\n")
+
+    print("🔹 STATUS DA META MENSAL")
+
+    if eficiencia_mensal < 100:
+        falta = ideal_mensal - real_mensal_estimado
+        print(f" Meta NÃO atingida.")
+        print(f" Faltaram {falta:.2f} unidades para atingir a meta mensal.")
+    elif eficiencia_mensal == 100:
+        print(" Meta exatamente atingida.")
+    else:
+        sobra = real_mensal_estimado - ideal_mensal
+        print(f" Meta SUPERADA!")
+        print(f" Excedente de {sobra:.2f} unidades acima da meta.")
+
+    print("\n===========================================================\n")
+       
 def menu_producao():
     
     while True:
         
-        print("\n==== Menu Teste ====")
+        print("\n==== MENU DE PRODUÇÃO ====")
         print("1 - Registrar Produção")
         print("2 - Listar Produção")
         print("3 - Excluir Produção")
         print("4 - Calcular Produção")
-        print("5 - Simulação ideal")
+        print("5 - Simulação Ideal")
+        print("6 - Relatório Real x Ideal")
         print("0 - Sair")
 
         opcao = input("Escolha: ")
@@ -453,10 +550,12 @@ def menu_producao():
                 calculo_producao()
             case "5":
                 simulação_ideal()
+            case "6":
+                relatorio_producao()
             case "0":
                 print("Saindo...")
                 break
             case _:
-                print(" Opção inválida!")
+                print("Opção inválida!")
                 
 menu_producao()    
