@@ -1,0 +1,149 @@
+[
+    {
+        "nome": "Arroz",
+        "data": "01/01/25",
+        "manha": 10,
+        "tarde": 20,
+        "noite": 10
+    },
+    {
+        "nome": "Arroz",
+        "data": "02/01/25",
+        "manha": 20,
+        "tarde": 10,
+        "noite": 20
+    },
+    {
+        "nome": "Arroz",
+        "data": "03/01/25",
+        "manha": 10,
+        "tarde": 20,
+        "noite": 10
+    },
+    {
+        "nome": "Arroz",
+        "data": "04/01/25",
+        "manha": 20,
+        "tarde": 10,
+        "noite": 20
+    },
+    {
+        "nome": "Arroz",
+        "data": "05/01/25",
+        "manha": 10,
+        "tarde": 20,
+        "noite": 10
+    },
+    {
+        "nome": "Arroz",
+        "data": "06/01/25",
+        "manha": 20,
+        "tarde": 10,
+        "noite": 20
+    },
+    {
+        "nome": "Arroz",
+        "data": "07/01/25",
+        "manha": 10,
+        "tarde": 20,
+        "noite": 10
+    },
+    {
+        "nome": "Feijão",
+        "data": "01/02/25",
+        "manha": 99,
+        "tarde": 63,
+        "noite": 28
+    },
+    {
+        "nome": "Feijão",
+        "data": "02/02/25",
+        "manha": 34,
+        "tarde": 33,
+        "noite": 75
+    },
+    {
+        "nome": "Feijão",
+        "data": "03/02/25",
+        "manha": 62,
+        "tarde": 99,
+        "noite": 33
+    },
+    {
+        "nome": "Feijão",
+        "data": "04/02/25",
+        "manha": 77,
+        "tarde": 82,
+        "noite": 56
+    },
+    {
+        "nome": "Feijão",
+        "data": "05/02/25",
+        "manha": 47,
+        "tarde": 24,
+        "noite": 94
+    },
+    {
+        "nome": "Feijão",
+        "data": "06/02/25",
+        "manha": 86,
+        "tarde": 82,
+        "noite": 75
+    },
+    {
+        "nome": "Feijão",
+        "data": "07/02/25",
+        "manha": 95,
+        "tarde": 78,
+        "noite": 86
+    },
+    {
+        "nome": "Arroz",
+        "data": "02/02/25",
+        "manha": 95,
+        "tarde": 67,
+        "noite": 42
+    },
+    {
+        "nome": "Arroz",
+        "data": "03/02/25",
+        "manha": 58,
+        "tarde": 72,
+        "noite": 73
+    },
+    {
+        "nome": "Arroz",
+        "data": "04/02/25",
+        "manha": 62,
+        "tarde": 41,
+        "noite": 56
+    },
+    {
+        "nome": "Arroz",
+        "data": "05/02/25",
+        "manha": 89,
+        "tarde": 58,
+        "noite": 47
+    },
+    {
+        "nome": "Arroz",
+        "data": "06/02/25",
+        "manha": 60,
+        "tarde": 47,
+        "noite": 49
+    },
+    {
+        "nome": "Arroz",
+        "data": "07/02/25",
+        "manha": 89,
+        "tarde": 71,
+        "noite": 92
+    },
+    {
+        "nome": "Arroz",
+        "data": "08/02/25",
+        "manha": 32,
+        "tarde": 67,
+        "noite": 95
+    }
+]

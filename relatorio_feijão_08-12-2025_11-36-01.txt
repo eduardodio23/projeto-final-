@@ -1,0 +1,52 @@
+=== RELATÓRIO DO PRODUTO: FEIJÃO ===
+
+LISTA DO PRODUTO
+
+Data: 01/02/25
+Manhã: 99 | Tarde: 63 | Noite: 28
+TOTAL DO DIA: 190
+
+Data: 02/02/25
+Manhã: 34 | Tarde: 33 | Noite: 75
+TOTAL DO DIA: 142
+
+Data: 03/02/25
+Manhã: 62 | Tarde: 99 | Noite: 33
+TOTAL DO DIA: 194
+
+Data: 04/02/25
+Manhã: 77 | Tarde: 82 | Noite: 56
+TOTAL DO DIA: 215
+
+Data: 05/02/25
+Manhã: 47 | Tarde: 24 | Noite: 94
+TOTAL DO DIA: 165
+
+Data: 06/02/25
+Manhã: 86 | Tarde: 82 | Noite: 75
+TOTAL DO DIA: 243
+
+Data: 07/02/25
+Manhã: 95 | Tarde: 78 | Noite: 86
+TOTAL DO DIA: 259
+
+
+PRODUÇÃO IDEAL
+Diaria : 25.00
+Semanal: 187.50
+Mensal : 750.00
+Anual  : 9000.00
+
+PRODUÇÃO REAL DO PRODUTO
+Diaria : 201.14
+Semanal: 1408.00
+Mensal : 6034.29
+Anual  : 73417.14
+
+EFICIÊNCIA DO PRODUTO
+Diaria : 804.56%
+Semanal: 750.93%
+Mensal : 804.57%
+Anual  : 815.75%
+
+META ATINGIDA? ✅ SIM

@@ -1,0 +1,80 @@
+=== RELATÓRIO DO PRODUTO: ARROZ ===
+
+LISTA DO PRODUTO
+
+Data: 01/01/25
+Manhã: 10 | Tarde: 20 | Noite: 10
+TOTAL DO DIA: 40
+
+Data: 02/01/25
+Manhã: 20 | Tarde: 10 | Noite: 20
+TOTAL DO DIA: 50
+
+Data: 03/01/25
+Manhã: 10 | Tarde: 20 | Noite: 10
+TOTAL DO DIA: 40
+
+Data: 04/01/25
+Manhã: 20 | Tarde: 10 | Noite: 20
+TOTAL DO DIA: 50
+
+Data: 05/01/25
+Manhã: 10 | Tarde: 20 | Noite: 10
+TOTAL DO DIA: 40
+
+Data: 06/01/25
+Manhã: 20 | Tarde: 10 | Noite: 20
+TOTAL DO DIA: 50
+
+Data: 07/01/25
+Manhã: 10 | Tarde: 20 | Noite: 10
+TOTAL DO DIA: 40
+
+Data: 02/02/25
+Manhã: 95 | Tarde: 67 | Noite: 42
+TOTAL DO DIA: 204
+
+Data: 03/02/25
+Manhã: 58 | Tarde: 72 | Noite: 73
+TOTAL DO DIA: 203
+
+Data: 04/02/25
+Manhã: 62 | Tarde: 41 | Noite: 56
+TOTAL DO DIA: 159
+
+Data: 05/02/25
+Manhã: 89 | Tarde: 58 | Noite: 47
+TOTAL DO DIA: 194
+
+Data: 06/02/25
+Manhã: 60 | Tarde: 47 | Noite: 49
+TOTAL DO DIA: 156
+
+Data: 07/02/25
+Manhã: 89 | Tarde: 71 | Noite: 92
+TOTAL DO DIA: 252
+
+Data: 08/02/25
+Manhã: 32 | Tarde: 67 | Noite: 95
+TOTAL DO DIA: 194
+
+
+PRODUÇÃO IDEAL
+Diaria : 25.00
+Semanal: 187.50
+Mensal : 750.00
+Anual  : 9000.00
+
+PRODUÇÃO REAL DO PRODUTO
+Diaria : 119.43
+Semanal: 836.00
+Mensal : 3582.86
+Anual  : 43591.43
+
+EFICIÊNCIA DO PRODUTO
+Diaria : 477.72%
+Semanal: 445.87%
+Mensal : 477.71%
+Anual  : 484.35%
+
+META ATINGIDA? ✅ SIM

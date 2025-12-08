@@ -1,0 +1,129 @@
+=== RELATÓRIO GERAL DE PRODUÇÃO ===
+
+LISTA COMPLETA DA PRODUÇÃO
+
+Produto: Arroz
+Data: 01/01/25
+Manhã: 10 | Tarde: 20 | Noite: 10
+TOTAL DO DIA: 40
+
+Produto: Arroz
+Data: 02/01/25
+Manhã: 20 | Tarde: 10 | Noite: 20
+TOTAL DO DIA: 50
+
+Produto: Arroz
+Data: 03/01/25
+Manhã: 10 | Tarde: 20 | Noite: 10
+TOTAL DO DIA: 40
+
+Produto: Arroz
+Data: 04/01/25
+Manhã: 20 | Tarde: 10 | Noite: 20
+TOTAL DO DIA: 50
+
+Produto: Arroz
+Data: 05/01/25
+Manhã: 10 | Tarde: 20 | Noite: 10
+TOTAL DO DIA: 40
+
+Produto: Arroz
+Data: 06/01/25
+Manhã: 20 | Tarde: 10 | Noite: 20
+TOTAL DO DIA: 50
+
+Produto: Arroz
+Data: 07/01/25
+Manhã: 10 | Tarde: 20 | Noite: 10
+TOTAL DO DIA: 40
+
+Produto: Feijão
+Data: 01/02/25
+Manhã: 99 | Tarde: 63 | Noite: 28
+TOTAL DO DIA: 190
+
+Produto: Feijão
+Data: 02/02/25
+Manhã: 34 | Tarde: 33 | Noite: 75
+TOTAL DO DIA: 142
+
+Produto: Feijão
+Data: 03/02/25
+Manhã: 62 | Tarde: 99 | Noite: 33
+TOTAL DO DIA: 194
+
+Produto: Feijão
+Data: 04/02/25
+Manhã: 77 | Tarde: 82 | Noite: 56
+TOTAL DO DIA: 215
+
+Produto: Feijão
+Data: 05/02/25
+Manhã: 47 | Tarde: 24 | Noite: 94
+TOTAL DO DIA: 165
+
+Produto: Feijão
+Data: 06/02/25
+Manhã: 86 | Tarde: 82 | Noite: 75
+TOTAL DO DIA: 243
+
+Produto: Feijão
+Data: 07/02/25
+Manhã: 95 | Tarde: 78 | Noite: 86
+TOTAL DO DIA: 259
+
+Produto: Arroz
+Data: 02/02/25
+Manhã: 95 | Tarde: 67 | Noite: 42
+TOTAL DO DIA: 204
+
+Produto: Arroz
+Data: 03/02/25
+Manhã: 58 | Tarde: 72 | Noite: 73
+TOTAL DO DIA: 203
+
+Produto: Arroz
+Data: 04/02/25
+Manhã: 62 | Tarde: 41 | Noite: 56
+TOTAL DO DIA: 159
+
+Produto: Arroz
+Data: 05/02/25
+Manhã: 89 | Tarde: 58 | Noite: 47
+TOTAL DO DIA: 194
+
+Produto: Arroz
+Data: 06/02/25
+Manhã: 60 | Tarde: 47 | Noite: 49
+TOTAL DO DIA: 156
+
+Produto: Arroz
+Data: 07/02/25
+Manhã: 89 | Tarde: 71 | Noite: 92
+TOTAL DO DIA: 252
+
+Produto: Arroz
+Data: 08/02/25
+Manhã: 32 | Tarde: 67 | Noite: 95
+TOTAL DO DIA: 194
+
+
+PRODUÇÃO IDEAL
+Diaria : 25.00
+Semanal: 187.50
+Mensal : 750.00
+Anual  : 9000.00
+
+PRODUÇÃO REAL GERAL
+Diaria : 205.33
+Semanal: 1437.33
+Mensal : 6160.00
+Anual  : 74946.67
+
+EFICIÊNCIA GERAL
+Diaria : 821.32%
+Semanal: 766.58%
+Mensal : 821.33%
+Anual  : 832.74%
+
+META ATINGIDA? ✅ SIM
