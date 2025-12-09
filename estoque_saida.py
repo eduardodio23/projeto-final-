@@ -1,8 +1,6 @@
-
 from datetime import datetime
 import json
 import os
-agora = datetime.now()  
 
 
 def salvar_estoque(estoque):
@@ -10,36 +8,47 @@ def salvar_estoque(estoque):
         json.dump(estoque, f, indent=4)
 
 
-        
-def saida_estoque (estoque):
-    produto = input("Digite o nome do produto ou código: ")
+def saida_estoque(estoque):
+    produto_ou_codigo = input("Digite o nome do produto ou código: ")
+
+    # tenta converter para número (caso seja código)
+    try:
+        codigo_digitado = int(produto_ou_codigo)
+    except:
+        codigo_digitado = None
+
     quantidade = int(input("Quantidade a retirar: "))
-    data = input("Data de saída (DD/MM/AAAA): ")
+
+    # DATA AUTOMÁTICA
+    data = datetime.today().strftime("%d/%m/%Y")
 
     for item in estoque:
-        if item['produto'] == produto or item['codigo'] == produto:
+
+        # verifica nome OU código
+        if item['produto'] == produto_ou_codigo or item['codigo'] == codigo_digitado:
 
             # saída normal
             if item['quantidade'] >= quantidade:
                 item['quantidade'] -= quantidade
                 item['data_saida'] = data
-                estoque.salvar_estoque(estoque)
-                print("\nSaída registrada.")
+                salvar_estoque(estoque)
+                print("\nSaída registrada com sucesso.")
                 return
 
             # saída parcial
             else:
-                print("\nEstoque insuficiente.")
+                print("\nEstoque insuficiente!")
                 print(f"Disponível: {item['quantidade']} unidades.")
                 opcao = input("Deseja retirar apenas o disponível? (s/n): ")
 
                 if opcao.lower() == "s":
                     item['quantidade'] = 0
                     item['data_saida'] = data
-                    estoque.salvar_estoque(estoque)
+                    salvar_estoque(estoque)
                     print("\nSaída parcial registrada.")
                 else:
-                    print("Operação cancelada.")
+                    print("\nOperação cancelada.")
+
                 return
 
-    print("\nProduto não encontrado.")
+    print("\nProduto não encontrado no estoque.")
