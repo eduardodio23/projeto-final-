@@ -187,3 +187,47 @@ def gerar_relatorio(lista):
             )
 
     print("\nRelatório gerado: relatorio_rh.csv\n")
+
+# -------------------------------------------------------------------- #
+# ------------------- FUNÇÃO PRINCIPAL DE TESTE ---------------------- #
+# -------------------------------------------------------------------- #
+
+def executar_modulo():
+    """
+    Função apenas para testes independentes.
+    O main da equipe deve chamar diretamente as funções.
+    """
+    funcionarios = carregar_json()
+
+    print("\n=== SISTEMA RH ===")
+    while True:
+        print("\n1 - Cadastrar funcionário")
+        print("2 - Calcular salários")
+        print("3 - Gerar relatório")
+        print("4 - Sair")
+        opc = input("Escolha: ")
+
+        if opc == "1":
+            func = cadastrar_funcionario()
+            funcionarios.append(func)
+            salvar_json(funcionarios)
+
+        elif opc == "2":
+            for f in funcionarios:
+                calcular_salario(f)
+            salvar_json(funcionarios)
+            print("Salários calculados!")
+
+        elif opc == "3":
+            gerar_relatorio(funcionarios)
+
+        elif opc == "4":
+            break
+        else:
+            print("Opção inválida!")
+
+
+
+# Permite rodar o módulo sozinho
+if __name__ == "__main__":
+    executar_modulo()
