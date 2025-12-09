@@ -107,3 +107,62 @@ def calcular_salario(func):
 
     return func
 
+# -------------------------------------------------------------------- #
+# ------------------ FUNÇÕES DE CADASTRO/JSON ------------------------ #
+# -------------------------------------------------------------------- #
+
+def cadastrar_funcionario():
+    """
+    Cadastro manual de funcionário via input.
+    Retorna um dicionário pronto para cálculo.
+    """
+
+    print("\n=== CADASTRO DE FUNCIONÁRIO ===")
+
+    nome = input("Nome: ")
+    cpf = input("CPF: ")
+    rg = input("RG: ")
+    endereco = input("Endereço: ")
+    telefone = input("Telefone: ")
+    filhos = int(input("Quantidade de filhos: "))
+
+    # Validação de cargo
+    while True:
+        cargo = input("Cargo (Operario / Supervisor / Gerente / Diretor): ").strip().capitalize()
+        if cargo in VALOR_HORA:
+            break
+        print("Cargo inválido! Tente novamente.")
+
+    # Horas extras
+    horas_extras = 0
+    if cargo in ["Operario", "Supervisor"]:
+        horas_extras = int(input("Horas extras no mês: "))
+
+    # Monta dicionário
+    funcionario = {
+        "nome": nome,
+        "cpf": cpf,
+        "rg": rg,
+        "endereco": endereco,
+        "telefone": telefone,
+        "filhos": filhos,
+        "cargo": cargo,
+        "horas_extras": horas_extras
+    }
+
+    return funcionario
+
+
+def salvar_json(lista):
+    """Salva lista completa no JSON."""
+    with open(CAMINHO_JSON, "w", encoding="utf-8") as arq:
+        json.dump(lista, arq, indent=4, ensure_ascii=False)
+
+
+def carregar_json():
+    """Carrega lista de funcionários se existir."""
+    try:
+        with open(CAMINHO_JSON, "r", encoding="utf-8") as arq:
+            return json.load(arq)
+    except FileNotFoundError:
+        return []
