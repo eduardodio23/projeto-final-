@@ -38,4 +38,72 @@ FAIXAS_IR = [
     (float("inf"), 0.275)
 ]
 
+# -------------------------------------------------------------------- #
+# ---------------------- FUNÇÕES DE CÁLCULO ---------------------------#
+# -------------------------------------------------------------------- #
+
+def calcular_inss(salario):
+    """
+    Calcula INSS baseado na tabela progressiva.
+    """
+    for teto, aliquota in FAIXAS_INSS:
+        if salario <= teto:
+            return salario * aliquota
+    return salario * 0.14
+
+
+def calcular_ir_anual(salario_liquido):
+    """
+    Calcula IRPF anual considerando salário líquido * 12.
+    """
+    salario_anual = salario_liquido * 12
+
+    for teto, aliquota in FAIXAS_IR:
+        if salario_anual <= teto:
+            return salario_anual * aliquota
+
+    return salario_anual * 0.275
+
+
+def calcular_salario(func):
+    """
+    Calcula salário bruto, extra, descontos, líquido.
+    Atualiza o dicionário do funcionário.
+    """
+    cargo = func["cargo"]
+    valor_hora = VALOR_HORA[cargo]
+    horas_base = 160
+
+    # SALÁRIO BRUTO
+    salario_bruto = valor_hora * horas_base
+
+    # HORAS EXTRAS (somente Operário e Supervisor)
+    if cargo in ["Operario", "Supervisor"]:
+        extra = func["horas_extras"] * (valor_hora * 2)
+    else:
+        extra = 0
+
+    salario_total = salario_bruto + extra
+
+    # INSS
+    inss = calcular_inss(salario_total)
+
+    # SALÁRIO LÍQUIDO
+    salario_liquido = salario_total - inss
+
+    # IRPF ANUAL
+    ir_anual = calcular_ir_anual(salario_liquido)
+
+    # Paga IR?
+    paga_ir = ir_anual > 0
+
+    # SALVANDO NO DICIONÁRIO
+    func["salario_bruto"] = salario_bruto
+    func["extra"] = extra
+    func["inss"] = inss
+    func["salario_liquido"] = salario_liquido
+    func["ir"] = ir_anual
+    func["paga_ir"] = paga_ir
+
+    return func
 
