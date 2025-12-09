@@ -166,3 +166,24 @@ def carregar_json():
             return json.load(arq)
     except FileNotFoundError:
         return []
+
+# -------------------------------------------------------------------- #
+# ------------------------ RELATÓRIO FINAL --------------------------- #
+# -------------------------------------------------------------------- #
+
+def gerar_relatorio(lista):
+    """
+    Gera relatório ordenado por nome no arquivo 'relatorio_rh.csv'.
+    """
+    lista_ordenada = sorted(lista, key=lambda f: f["nome"].lower())
+
+    with open("relatorio_rh.csv", "w", encoding="utf-8") as arq:
+        arq.write("NOME;CARGO;BRUTO;EXTRA;INSS;LIQUIDO;IR;PAGA_IR\n")
+
+        for f in lista_ordenada:
+            arq.write(
+                f"{f['nome']};{f['cargo']};{f['salario_bruto']:.2f};{f['extra']:.2f};"
+                f"{f['inss']:.2f};{f['salario_liquido']:.2f};{f['ir']:.2f};{f['paga_ir']}\n"
+            )
+
+    print("\nRelatório gerado: relatorio_rh.csv\n")
