@@ -2,11 +2,9 @@ from datetime import datetime
 import json
 import os
 import estoque_saida
+
 agora = datetime.now()
 print("Data e hora atuais:", agora.strftime("%d/%m/%Y %H:%M"))
-
-
-
 
 
 def salvar_estoque(estoque):
@@ -14,12 +12,7 @@ def salvar_estoque(estoque):
         json.dump(estoque, f, indent=4)
 
 
-
-
 # CADASTRAR 10 PRODUTOS INICIAIS
-
-from datetime import datetime
-
 def cadastrar_produtos_iniciais():
     estoque = []
 
@@ -77,41 +70,18 @@ def cadastrar_produtos_iniciais():
                 continue
 
             break
-
         # Data de entrada
-        while True:
-            data = input("Data de entrada (DD/MM/AAAA): ")
-
-            if not data:
-                print("A data de entrada não pode ser vazia. Tente novamente.")
-                continue
-
-            try:
-                data_digitada = datetime.strptime(data, "%d/%m/%Y").date()
-            except ValueError:
-                print("Formato inválido! Use DD/MM/AAAA.")
-                continue
-
-            hoje = datetime.today().date()
-
-            if data_digitada > hoje:
-                print("A data de entrada não pode ser no futuro. Tente novamente.")
-                continue
-            if data_digitada < hoje:
-                print("A data de entrada não pode ser anterior a hoje. Tente novamente.")
-                continue
-            break
+        data = datetime.today().strftime("%d/%m/%Y")
 
         # SALVA no estoque
         estoque.append({
-    'produto': produto,
-    'codigo': codigo,
-    'quantidade': quantidade,
-    'data_entrada': data,
-    'data_saida': ''
-})
+            'produto': produto,
+            'codigo': codigo,
+            'quantidade': quantidade,
+            'data_entrada': data,
+            'data_saida': ''
+        })
 
-        
     salvar_estoque(estoque)
     print("\n Os 10 produtos foram cadastrados com sucesso!\n")
     return estoque
@@ -122,28 +92,31 @@ def entrada_estoque(estoque):
     print("\n--- ENTRADA DE PRODUTO ---")
     produto = input("Digite o nome do produto: ")
     codigo = input("Digite o código do produto: ")
-    data = input("Digite a data da entrada (DD/MM/AAAA): ")
+
+    
+    data = datetime.today().strftime("%d/%m/%Y")
+
     quantidade = int(input("Quantidade a adicionar: "))
 
     for item in estoque:
 
-        # 1 - Produto existe e o código confere
-        if item['produto'] == produto and item['codigo'] == codigo:
+        # 1 Quando o Produto existe e o código confere
+        if item['produto'] == produto and item['codigo'] == int(codigo):
             item['quantidade'] += quantidade
             item['data_entrada'] = data
             salvar_estoque(estoque)
             print(f"\nEntrada registrada: +{quantidade} unidades.")
             return
 
-        # 2 - Produto existe, mas o código mudou
-        if item['produto'] == produto and item['codigo'] != codigo:
+        # 2 Quando o Produto existe, mas o código mudou
+        if item['produto'] == produto and item['codigo'] != int(codigo):
             print("\nO produto já existe, mas o código é diferente.")
             print(f"Código atual: {item['codigo']} — Código novo: {codigo}")
 
             opcao = int(input("Deseja atualizar o código? (1-sim 2-não): "))
 
             if opcao == 1:
-                item['codigo'] = codigo
+                item['codigo'] = int(codigo)
                 item['quantidade'] += quantidade
                 item['data_entrada'] = data
                 salvar_estoque(estoque)
@@ -152,27 +125,20 @@ def entrada_estoque(estoque):
                 print("\nOperação cancelada.")
             return
 
-        # 3 - Código já existe para outro produto
-        if item['codigo'] == codigo and item['produto'] != produto:
+        # Quando o Código já existe para outro produto
+        if item['codigo'] == int(codigo) and item['produto'] != produto:
             print("\nCódigo pertence a outro produto!")
             return
 
     print("\n Produto não encontrado no estoque.")
 
 
-
-
-
-
-
-# ==========================================
 # CONSULTAR ESTOQUE
-# ==========================================
 def consultar_estoque(estoque):
     produto = input("Digite o nome do produto ou código: ")
 
     for item in estoque:
-        if item['produto'] == produto or item['codigo'] == produto:
+        if item['produto'] == produto or str(item['codigo']) == produto:
             print("\n--- DADOS DO PRODUTO ---")
             print(f"Produto: {item['produto']}")
             print(f"Código: {item['codigo']}")
@@ -185,24 +151,18 @@ def consultar_estoque(estoque):
 
 
 
-# ==========================================
-# MENU
-# ==========================================
 def menu_estoque():
+    if os.path.exists("estoque.json"):
 
-    
-     if os.path.exists("estoque.json"):
-        
         if os.path.getsize("estoque.json") > 0:
             with open("estoque.json", "r") as f:
                 estoque = json.load(f)
         else:
             estoque = cadastrar_produtos_iniciais()
-     else:
+    else:
         estoque = cadastrar_produtos_iniciais()
 
-
-     while True:
+    while True:
         print("\nMenu de Estoque:")
         print("1. Entrada de Produto")
         print("2. Saída de Produto")
@@ -221,7 +181,6 @@ def menu_estoque():
             break
         else:
             print("Opção inválida.")
-
 
 
 if __name__ == "__main__":
