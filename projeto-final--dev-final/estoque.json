@@ -1,0 +1,72 @@
+[
+    {
+        "produto": "roupa",
+        "codigo": 90,
+        "quantidade": 45,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "verniz",
+        "codigo": 23,
+        "quantidade": 34,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "luva",
+        "codigo": 45,
+        "quantidade": 3,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "mochila",
+        "codigo": 34,
+        "quantidade": 2,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "escolta",
+        "codigo": 121,
+        "quantidade": 78,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "piloto",
+        "codigo": 78,
+        "quantidade": 23,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "folha",
+        "codigo": 43,
+        "quantidade": 34,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "cinto",
+        "codigo": 12,
+        "quantidade": 3,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "colher",
+        "codigo": 4,
+        "quantidade": 34,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    },
+    {
+        "produto": "joad",
+        "codigo": 25,
+        "quantidade": 4123,
+        "data_entrada": "08/12/2025",
+        "data_saida": ""
+    }
+]
