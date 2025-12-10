@@ -1,19 +1,51 @@
 """
-Módulo: rh.py
+Módulo: rh.py (versão melhorada)
 Autor: Alvaro Mattos
 Descrição:
-    Módulo de Recursos Humanos para cálculo salarial,
-    desconto de INSS, IRPF, cadastro de funcionários e
-    geração de relatório ordenado por nome.
+    Versão aprimorada do módulo RH. Inclui:
+    - Menu interativo com navegação por setas (readchar)
+    - Validações básicas (CPF, números, telefone)
+    - Mensagens de erro amigáveis
+    - Opção de excluir funcionário
+    - Relatórios CSV e JSON
+    - Uso de cores no terminal via colorama (opcional)
+
+Dependências:
+    pip install readchar colorama
+
+Observações:
+    - Este arquivo foi projetado para ser usado em terminais compatíveis.
+    - Se não quiser instalar colorama, o código funciona sem cores (usa fallback).
 """
 
 import json
+import re
+import os
+from datetime import datetime
+
+try:
+    import readchar
+except Exception:
+    raise SystemExit("Biblioteca 'readchar' não encontrada. Instale com: pip install readchar")
+
+# colorama é opcional, melhora a aparência no terminal Windows
+try:
+    from colorama import init as colorama_init, Fore, Back, Style
+    colorama_init(autoreset=True)
+    USE_COLOR = True
+except Exception:
+    # Fallback sem cores
+    class Dummy:
+        def __getattr__(self, name):
+            return ""
+    Fore = Back = Style = Dummy()
+    USE_COLOR = False
 
 # --------------------------- CONFIGURAÇÕES --------------------------- #
-
 CAMINHO_JSON = "rh_funcionarios.json"
+CAMINHO_REL_JSON = "relatorio_rh.json"
+CAMINHO_REL_CSV = "relatorio_rh.csv"
 
-# Valor da hora por cargo
 VALOR_HORA = {
     "Operario": 15,
     "Supervisor": 40,
@@ -21,15 +53,13 @@ VALOR_HORA = {
     "Diretor": 80
 }
 
-# Faixas de INSS (percentuais simplificados)
 FAIXAS_INSS = [
-    (1302, 0.075),   # 7,5%
-    (2571.29, 0.09), # 9%
-    (3856.94, 0.12), # 12%
-    (7507.49, 0.14)  # 14%
+    (1302, 0.075),
+    (2571.29, 0.09),
+    (3856.94, 0.12),
+    (7507.49, 0.14)
 ]
 
-# Faixas IRPF anual (simplificadas)
 FAIXAS_IR = [
     (22847.76, 0.00),
     (33919.80, 0.075),
@@ -38,196 +68,260 @@ FAIXAS_IR = [
     (float("inf"), 0.275)
 ]
 
-# -------------------------------------------------------------------- #
-# ---------------------- FUNÇÕES DE CÁLCULO ---------------------------#
-# -------------------------------------------------------------------- #
+# --------------------------- UTILITÁRIOS ------------------------------- #
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def carregar_json():
+    try:
+        with open(CAMINHO_JSON, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
+        print(Fore.RED + "Arquivo JSON corrompido. Iniciando lista vazia.")
+        return []
+
+def salvar_json(lista):
+    try:
+        with open(CAMINHO_JSON, 'w', encoding='utf-8') as f:
+            json.dump(lista, f, indent=4, ensure_ascii=False)
+    except Exception as e:
+        print(Fore.RED + f"Erro ao salvar JSON: {e}")
+
+# --------------------------- VALIDAÇÕES -------------------------------- #
+
+def validar_texto(valor, campo, minimo=1):
+    if not isinstance(valor, str) or len(valor.strip()) < minimo:
+        raise ValueError(f"{campo} inválido")
+    return valor.strip()
+
+def validar_inteiro(valor, campo):
+    try:
+        n = int(valor)
+        if n < 0:
+            raise ValueError()
+        return n
+    except Exception:
+        raise ValueError(f"{campo} deve ser um número inteiro não-negativo")
+
+def validar_cpf(cpf):
+    cpf_clean = re.sub(r'\D', '', cpf)
+    if len(cpf_clean) != 11:
+        raise ValueError("CPF deve ter 11 dígitos")
+    return cpf_clean
+
+def validar_telefone(num):
+    t = re.sub(r'\D', '', num)
+    if len(t) < 8:
+        raise ValueError("Telefone inválido")
+    return t
+
+def validar_cargo(cargo):
+    cargo = cargo.capitalize()
+    if cargo not in VALOR_HORA:
+        raise ValueError("Cargo inválido")
+    return cargo
+
+# ------------------------ CÁLCULOS SALARIAIS ---------------------------- #
 
 def calcular_inss(salario):
-    """
-    Calcula INSS baseado na tabela progressiva.
-    """
     for teto, aliquota in FAIXAS_INSS:
         if salario <= teto:
             return salario * aliquota
     return salario * 0.14
 
-
 def calcular_ir_anual(salario_liquido):
-    """
-    Calcula IRPF anual considerando salário líquido * 12.
-    """
     salario_anual = salario_liquido * 12
-
     for teto, aliquota in FAIXAS_IR:
         if salario_anual <= teto:
             return salario_anual * aliquota
-
     return salario_anual * 0.275
 
-
 def calcular_salario(func):
-    """
-    Calcula salário bruto, extra, descontos, líquido.
-    Atualiza o dicionário do funcionário.
-    """
-    cargo = func["cargo"]
-    valor_hora = VALOR_HORA[cargo]
+    cargo = func.get('cargo')
+    valor_hora = VALOR_HORA.get(cargo, 0)
     horas_base = 160
-
-    # SALÁRIO BRUTO
     salario_bruto = valor_hora * horas_base
-
-    # HORAS EXTRAS (somente Operário e Supervisor)
+    extra = 0
     if cargo in ["Operario", "Supervisor"]:
-        extra = func["horas_extras"] * (valor_hora * 2)
-    else:
-        extra = 0
-
+        extra = func.get('horas_extras', 0) * (valor_hora * 2)
     salario_total = salario_bruto + extra
-
-    # INSS
     inss = calcular_inss(salario_total)
-
-    # SALÁRIO LÍQUIDO
     salario_liquido = salario_total - inss
-
-    # IRPF ANUAL
     ir_anual = calcular_ir_anual(salario_liquido)
-
-    # Paga IR?
     paga_ir = ir_anual > 0
-
-    # SALVANDO NO DICIONÁRIO
-    func["salario_bruto"] = salario_bruto
-    func["extra"] = extra
-    func["inss"] = inss
-    func["salario_liquido"] = salario_liquido
-    func["ir"] = ir_anual
-    func["paga_ir"] = paga_ir
-
+    func['salario_bruto'] = round(salario_bruto, 2)
+    func['extra'] = round(extra, 2)
+    func['inss'] = round(inss, 2)
+    func['salario_liquido'] = round(salario_liquido, 2)
+    func['ir'] = round(ir_anual, 2)
+    func['paga_ir'] = paga_ir
     return func
 
-# -------------------------------------------------------------------- #
-# ------------------ FUNÇÕES DE CADASTRO/JSON ------------------------ #
-# -------------------------------------------------------------------- #
+# ------------------------ FUNÇÕES PRINCIPAIS --------------------------- #
 
-def cadastrar_funcionario():
-    """
-    Cadastro manual de funcionário via input.
-    Retorna um dicionário pronto para cálculo.
-    """
-
-    print("\n=== CADASTRO DE FUNCIONÁRIO ===")
-
-    nome = input("Nome: ")
-    cpf = input("CPF: ")
-    rg = input("RG: ")
-    endereco = input("Endereço: ")
-    telefone = input("Telefone: ")
-    filhos = int(input("Quantidade de filhos: "))
-
-    # Validação de cargo
-    while True:
-        cargo = input("Cargo (Operario / Supervisor / Gerente / Diretor): ").strip().capitalize()
-        if cargo in VALOR_HORA:
-            break
-        print("Cargo inválido! Tente novamente.")
-
-    # Horas extras
-    horas_extras = 0
-    if cargo in ["Operario", "Supervisor"]:
-        horas_extras = int(input("Horas extras no mês: "))
-
-    # Monta dicionário
-    funcionario = {
-        "nome": nome,
-        "cpf": cpf,
-        "rg": rg,
-        "endereco": endereco,
-        "telefone": telefone,
-        "filhos": filhos,
-        "cargo": cargo,
-        "horas_extras": horas_extras
-    }
-
-    return funcionario
-
-
-def salvar_json(lista):
-    """Salva lista completa no JSON."""
-    with open(CAMINHO_JSON, "w", encoding="utf-8") as arq:
-        json.dump(lista, arq, indent=4, ensure_ascii=False)
-
-
-def carregar_json():
-    """Carrega lista de funcionários se existir."""
+def criar_funcionario_interativo():
     try:
-        with open(CAMINHO_JSON, "r", encoding="utf-8") as arq:
-            return json.load(arq)
-    except FileNotFoundError:
-        return []
+        nome = validar_texto(input("Nome: "), "Nome")
+        cpf = validar_cpf(input("CPF (somente números): "))
+        rg = validar_texto(input("RG: "), "RG")
+        endereco = validar_texto(input("Endereço: "), "Endereço")
+        telefone = validar_telefone(input("Telefone: "))
+        filhos = validar_inteiro(input("Quantidade de filhos: "), "Filhos")
+        while True:
+            try:
+                cargo = validar_cargo(input("Cargo (Operario/Supervisor/Gerente/Diretor): "))
+                break
+            except ValueError as e:
+                print(Fore.YELLOW + str(e))
+        horas_extras = 0
+        if cargo in ["Operario", "Supervisor"]:
+            horas_extras = validar_inteiro(input("Horas extras no mês: "), "Horas extras")
 
-# -------------------------------------------------------------------- #
-# ------------------------ RELATÓRIO FINAL --------------------------- #
-# -------------------------------------------------------------------- #
+        funcionario = {
+            'nome': nome,
+            'cpf': cpf,
+            'rg': rg,
+            'endereco': endereco,
+            'telefone': telefone,
+            'filhos': filhos,
+            'cargo': cargo,
+            'horas_extras': horas_extras
+        }
+        return funcionario
+    except ValueError as e:
+        print(Fore.RED + "Erro no cadastro: " + str(e))
+        return None
 
-def gerar_relatorio(lista):
-    """
-    Gera relatório ordenado por nome no arquivo 'relatorio_rh.csv'.
-    """
-    lista_ordenada = sorted(lista, key=lambda f: f["nome"].lower())
+def listar_funcionarios(funcionarios):
+    if not funcionarios:
+        print(Fore.YELLOW + "Nenhum funcionário cadastrado.")
+        return
+    print(Fore.CYAN + "\nLista de funcionários:\n")
+    for i, f in enumerate(funcionarios, start=1):
+        nome = f.get('nome', '—')
+        cargo = f.get('cargo', '—')
+        sal = f.get('salario_liquido', '—')
+        print(f"{i}. {nome} — {cargo} — Salário líquido: R$ {sal}")
 
-    with open("relatorio_rh.csv", "w", encoding="utf-8") as arq:
-        arq.write("NOME;CARGO;BRUTO;EXTRA;INSS;LIQUIDO;IR;PAGA_IR\n")
+def excluir_funcionario(funcionarios):
+    listar_funcionarios(funcionarios)
+    if not funcionarios:
+        return funcionarios
+    try:
+        idx = validar_inteiro(input("Digite o número do funcionário a excluir: "), "Índice")
+        if idx < 1 or idx > len(funcionarios):
+            print(Fore.RED + "Índice fora do intervalo")
+            return funcionarios
+        f = funcionarios.pop(idx-1)
+        salvar_json(funcionarios)
+        print(Fore.GREEN + f"Funcionário {f.get('nome')} excluído com sucesso.")
+        return funcionarios
+    except ValueError as e:
+        print(Fore.RED + str(e))
+        return funcionarios
 
-        for f in lista_ordenada:
-            arq.write(
-                f"{f['nome']};{f['cargo']};{f['salario_bruto']:.2f};{f['extra']:.2f};"
-                f"{f['inss']:.2f};{f['salario_liquido']:.2f};{f['ir']:.2f};{f['paga_ir']}\n"
-            )
+def gerar_relatorios(funcionarios):
+    # JSON resumido
+    rel = {
+        'gerado_em': datetime.now().strftime('%d/%m/%Y %H:%M'),
+        'quantidade': len(funcionarios),
+        'funcionarios': funcionarios
+    }
+    try:
+        with open(CAMINHO_REL_JSON, 'w', encoding='utf-8') as f:
+            json.dump(rel, f, indent=4, ensure_ascii=False)
+        # CSV detalhado
+        lista_ordenada = sorted(funcionarios, key=lambda x: x.get('nome', '').lower())
+        with open(CAMINHO_REL_CSV, 'w', encoding='utf-8') as f:
+            f.write('NOME;CARGO;BRUTO;EXTRA;INSS;LIQUIDO;IR;PAGA_IR\n')
+            for ff in lista_ordenada:
+                f.write(f"{ff.get('nome')};{ff.get('cargo')};{ff.get('salario_bruto',0):.2f};{ff.get('extra',0):.2f};{ff.get('inss',0):.2f};{ff.get('salario_liquido',0):.2f};{ff.get('ir',0):.2f};{ff.get('paga_ir')}\n")
+        print(Fore.GREEN + f"Relatórios gerados: {CAMINHO_REL_JSON}, {CAMINHO_REL_CSV}")
+    except Exception as e:
+        print(Fore.RED + f"Erro ao gerar relatórios: {e}")
 
-    print("\nRelatório gerado: relatorio_rh.csv\n")
+# ------------------------ MENU INTERATIVO (READCHAR) ------------------ #
 
-# -------------------------------------------------------------------- #
-# ------------------- FUNÇÃO PRINCIPAL DE TESTE ---------------------- #
-# -------------------------------------------------------------------- #
+MENU_ITEMS = [
+    "Cadastrar funcionário",
+    "Calcular salários",
+    "Listar funcionários",
+    "Excluir funcionário",
+    "Gerar relatório",
+    "Sair"
+]
 
-def executar_modulo():
-    """
-    Função apenas para testes independentes.
-    O main da equipe deve chamar diretamente as funções.
-    """
-    funcionarios = carregar_json()
-
-    print("\n=== SISTEMA RH ===")
-    while True:
-        print("\n1 - Cadastrar funcionário")
-        print("2 - Calcular salários")
-        print("3 - Gerar relatório")
-        print("4 - Sair")
-        opc = input("Escolha: ")
-
-        if opc == "1":
-            func = cadastrar_funcionario()
-            funcionarios.append(func)
-            salvar_json(funcionarios)
-
-        elif opc == "2":
-            for f in funcionarios:
-                calcular_salario(f)
-            salvar_json(funcionarios)
-            print("Salários calculados!")
-
-        elif opc == "3":
-            gerar_relatorio(funcionarios)
-
-        elif opc == "4":
-            break
+def imprimir_menu(selecao):
+    clear_screen()
+    print(Back.BLACK + Fore.WHITE + "=== SISTEMA RH ===\n")
+    for i, item in enumerate(MENU_ITEMS):
+        prefix = '  '
+        if i == selecao:
+            prefix = Fore.BLACK + Back.WHITE + '→ ' + Style.RESET_ALL
+            print(prefix + Fore.GREEN + item + Style.RESET_ALL)
         else:
-            print("Opção inválida!")
+            print('  ' + item)
 
+def menu_interativo():
+    funcionarios = carregar_json()
+    selecao = 0
+    imprimir_menu(selecao)
 
+    while True:
+        key = readchar.readkey()
+        # suporte para diferentes constantes de tecla entre plataformas
+        if key == readchar.key.UP or key == '\x1b[A':
+            selecao = (selecao - 1) % len(MENU_ITEMS)
+            imprimir_menu(selecao)
+        elif key == readchar.key.DOWN or key == '\x1b[B':
+            selecao = (selecao + 1) % len(MENU_ITEMS)
+            imprimir_menu(selecao)
+        elif key == readchar.key.ENTER or key == '\r' or key == '\n':
+            escolha = MENU_ITEMS[selecao]
+            if escolha == "Cadastrar funcionário":
+                f = criar_funcionario_interativo()
+                if f:
+                    funcionarios.append(f)
+                    salvar_json(funcionarios)
+                    print(Fore.GREEN + "Funcionário cadastrado com sucesso!")
+                    input("Pressione Enter para continuar...")
+                imprimir_menu(selecao)
+            elif escolha == "Calcular salários":
+                if not funcionarios:
+                    print(Fore.YELLOW + "Nenhum funcionário para calcular.")
+                    input("Pressione Enter para continuar...")
+                else:
+                    for i in range(len(funcionarios)):
+                        funcionarios[i] = calcular_salario(funcionarios[i])
+                    salvar_json(funcionarios)
+                    print(Fore.GREEN + "Cálculos realizados e salvos.")
+                    input("Pressione Enter para continuar...")
+                imprimir_menu(selecao)
+            elif escolha == "Listar funcionários":
+                listar_funcionarios(funcionarios)
+                input("Pressione Enter para continuar...")
+                imprimir_menu(selecao)
+            elif escolha == "Excluir funcionário":
+                funcionarios = excluir_funcionario(funcionarios)
+                input("Pressione Enter para continuar...")
+                imprimir_menu(selecao)
+            elif escolha == "Gerar relatório":
+                gerar_relatorios(funcionarios)
+                input("Pressione Enter para continuar...")
+                imprimir_menu(selecao)
+            elif escolha == "Sair":
+                print(Fore.CYAN + "Saindo...\n")
+                break
+        elif key == '\x03':  # Ctrl+C
+            print(Fore.CYAN + "Saindo (Ctrl+C)...")
+            break
 
-# Permite rodar o módulo sozinho
-if __name__ == "__main__":
-    executar_modulo()
+if __name__ == '__main__':
+    try:
+        menu_interativo()
+    except Exception as e:
+        print(Fore.RED + f"Erro inesperado: {e}")
+        raise
